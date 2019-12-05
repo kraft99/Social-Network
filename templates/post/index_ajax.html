@@ -1,0 +1,158 @@
+{% load static from staticfiles %}
+		
+					{% for post in posts %}
+						 <div class="card shadow-sm middle-content-card post-space--bottom"><!-- card starts -->
+						    	<div class="post-card-top-avatar-wrap clearfix">
+						    		{% if post.owner.profile.pic %}
+						    		<img src="{{post.owner.profile.pic_url }}" alt="..." class="avatar-sizing rounded-circle">
+						    		{% else %}
+						    		<img src="{% static 'images/avatar/default_avatar.jpeg' %}" alt="..." class="avatar-sizing rounded-circle">
+						    		{% endif %}
+						    		<h5 style="display: inline-block;"><a href="{{post.owner.profile.get_absolute_url}}">{{post.created_by}}</a></h5>
+						    		<span class="post-create-at">{{ post.created_at}}</span>
+						    		{% ifnotequal request.user post.owner %}
+						    		<div class="btn--follow-wrap float-right pt-3" style="display: inline-block;">
+						    			<form action="{% url 'follow:follow-toggle' %}" method="POST" class="follow-form-avatar follow-avatar--btn">
+						    			{% csrf_token %}
+						    			<input type="hidden" name="to_user" value="{{post.owner.username}}">
+						    			{% if is_auth %}
+						    				{% if request.user in post.owner.profile.user_followers %}
+						    				<button class="btn btn-default btn--unfollow">UnFollow</button>
+						    				{% else %}
+						    				<button class="btn btn-default btn--follow">Follow</button>
+						    				{% endif %}
+						    			{% endif %}
+						    			</form>
+						    		</div>
+						    		{% endifnotequal %}
+
+						    	</div>
+						    <div  class='post--card-wrap'>
+						    	<a href="{% url 'post:post-view' post.slug %}" style="text-decoration: none;color:#565656;">
+						    	{% if post.pic %}
+								    <img src="{{post.pic}}" class="card-img-top" alt="...">
+								    {% endif %}
+								    <div class="card-body">
+								      <h5 class="card-title">{{post.title}}</h5>
+								      <p class="card-text">{{post.content}}</p>
+								    </div>
+								</a>
+							</div>
+							<div class="card-footer parent-wrap" style="background: #fff;padding:.75rem 0 !important">
+						      <div class="clearfix like-comment-report-wrap-div">
+						      	<p class="like-para">
+						      		<i class="la la-thumbs-up la-thumbs-up--circle"></i>
+						      		<span>{{post.likes_count}}</span>
+						      	</p>
+						      	<span>.</span>
+						      	<p class="comment-para">
+						      		<i class="la la-comments la-comments-icon"></i>
+						      		<span>{{post.comments_count}}</span>
+						      	</p>
+						      	<p class="comment-para views-wrap-p">
+						      		<span>views</span>
+						      		<span>3</span>
+						      	</p>
+						      	
+						      	<p class="float-right report--3-dots" data-toggle="modal" data-target="#exampleModal">
+						      		<span>...</span>
+						      	</p>
+						      	<!-- modal -->
+						      	{% include "partials/_post_report_modal.html" with post=post %}
+						      	<!-- /modal here -->
+						      </div>
+						      <div class="card-divider-comments"></div>
+						      <div class="like-comment-action-icon-div">
+						      	{% if is_auth %}
+						      	<form action="{% url 'post:post-like-unlike' %}" method="POST" class="like-form">
+						      		{% csrf_token %}
+						      		<input type="hidden" name="post_id" value="{{post.id}}">
+						      		<button>
+						      			{% if request.user in post.post_users_like %}
+						      			<i class='la la-thumbs-down la-like--action-icon unliked'></i>
+						      			{% else %}
+						      			<i class='la la-thumbs-up la-like--action-icon liked'></i>
+						      			{% endif %}
+						      		</button>
+						      		<span class="like-text icon-text">Like</span>
+						      	</form>
+						      	{% else %}
+						      	<form action="" method="" class="like-form">
+						      		<button>
+						      			<i class='la la-thumbs-up la-like--action-icon unliked'></i>
+						      		</button>
+						      		<span class="like-text icon-text">Like</span>
+						      	</form>
+						      	{% endif %}
+						      	<span class="action-comment-span space-action-span comment-action-js">
+						      		<i class='la la-comments la-comment-action-icon'></i>
+						      		<span class="comment-text icon-text">Comment</span>
+						      	</span>
+						      	<span class="action-share-span space-action-span">
+						      		<i class='la la-share la-comment-action-icon'></i>
+						      		<span class="share-text icon-text">Share</span>
+						      	</span>
+
+						      	<span class="float-right icon-text" data-toggle="modal" data-target="#exampleModalScrollable">Top Comments<i class='la la-caret-down'></i></span>
+						      </div>
+						      {% include 'partials/_top_comments_modal.html' %}
+						      <!-- comment form div -->
+						   {% if is_auth %}
+						  	<div class="comment-form-div hide-comment-form-wrap">
+						      	<div class="container-fluid comment-container--fluid-padding">
+						      		<div class="row">
+						      			<div class="col col-lg-2">
+						      				{% if request.user.profile.pic %}
+						      				<img src="{{request.user.profile.pic_url}}" alt="..." class="avatar-comment-sizing rounded-circle">
+						      				{% else %}
+						      				<img src="{% static 'images/request_user.png' %}" alt="..." class="avatar-comment-sizing rounded-circle">
+						      				{% endif %}
+							      		</div>
+						      			<div class="col col-lg-10">
+						      				<form class="form-inline my-2 my-lg-0 comment-form" action="{% url 'comment:comment-add' %}" method="POST">
+						      					{% csrf_token %}
+						      					<!-- <div class="col-lg-12"> -->
+						      						<input type="hidden" name="post_id" value="{{post.id}}">
+								      				<input class="form-control mr-sm-2 form-control-lg comment-input" type="search" placeholder="Add a comment...">
+								      			<!-- </div> -->
+								    		</form>
+						      			</div>
+						      		</div>
+						      		{% if post.recent_post_comment %}
+						      		<div class="row space-posts-comments-by-users">
+						      			<div class="col col-lg-2">
+						      				{% if post.recent_post_comment.user.profile.pic %}
+						      				<img src="{{post.recent_post_comment.user.profile.pic_url}}" alt="..." class="avatar-comment-sizing rounded-circle">
+						      				{% else %}
+						      				<img src="{% static 'images/avatar/default_avatar.jpeg' %}" alt="..." class="avatar-comment-sizing rounded-circle">
+						      				{% endif %}
+							      		</div>
+						      			<div class="col col-lg-10">
+						      				<div>
+						      						{% if post.recent_post_comment.user%}
+						      						<h6>
+						      					      <a href="{{post.owner.profile.get_absolute_url}}"> {{post.recent_post_comment.user.username}}</a>
+						      				    	</h6>
+						      				        {%endif%}
+						      					<div class="post-comment-text-wrap clearfix">
+						      						<p>
+						      							{{post.recent_post_comment.content}}
+						      						</p>
+						      						<p class="float-right">{{ post.recent_post_comment.readable_time }}</p>
+						      					</div>
+						      					{% if post.more_comments %}
+						      					<p><a href="#">view all comments</a></p>
+						      					{% endif %}
+						      				</div>
+						      			</div>				      			
+						      		</div>
+						      		{% endif %}
+								</div>
+						      </div>
+						      {% endif %}
+						      <!-- close comment form div -->
+						    </div>
+						  </div><!-- card end -->
+				  	{% endfor %}
+
+

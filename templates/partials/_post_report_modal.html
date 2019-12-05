@@ -1,0 +1,26 @@
+<!-- modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Report Post</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{ post.title }}
+        <form action="" method="" class="text-center">
+          {% csrf_token %}
+          <input type="hidden" name="post_id" value="{{ post.id }}">
+        	<label><input type="radio" name="report" value="1">It's spam</label>
+        	<label><input type="radio" name="report" value="2">inappropriate</label>
+          <label><input type="radio" name="report" value="4">False information</label>
+          <div>
+            <button class="btn btn-primary">Report</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

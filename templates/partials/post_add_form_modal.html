@@ -1,0 +1,51 @@
+<!-- Modal -->
+<div class="modal fade" id="exampleModalScrollablePOST" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Add a Post</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-scrollable-activate">
+        <div class="row">
+    <div class="col-md-12" style="z-index: 111111111111;position: static;">
+      <!-- form starts here -->
+        <form method="POST" action="{% url 'post:post_add' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="post_owner" value="{{ request.user.username }}">
+            <div class="row">
+                <div class="col-sm-12 form-group">
+                    <label for="email">
+                        Title : </label>
+                    <input type="text" class="form-control" id="title_id" name="title"
+                    maxlength="50" required="required">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 form-group">
+                    <label for="name">
+                        Content:</label>
+                    <textarea class="form-control" type="textarea" id="content_id" name="content" placeholder="Your Post Content here..." maxlength="400" rows="4" required="required"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 form-group">
+                    <input type="file" class="form-control" name="file" id="file_id" style="border:transparent;">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 form-group">
+                    <button type="submit" class="btn btn-info btn-block shadow-sm">Post it !</button>
+                </div>
+            </div>
+        </form>
+        <!-- close form -->
+    </div>
+</div>
+      </div>
+    </div>
+  </div>
+</div>

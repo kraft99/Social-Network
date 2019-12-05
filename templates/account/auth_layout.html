@@ -1,0 +1,43 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{title}}</title>
+    <!-- Bootstrap Version 4.1.x -->
+    <link rel="stylesheet" href="{% static 'css/vendors/line-awesome/line-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/vendors/bootstrap/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/vendors/text-effect/simpletextrotator.css' %}">
+    <link rel="stylesheet" href="{% static 'css/account/style.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+</head>
+<body>
+<style type="text/css">
+{% block css %}
+        
+{% endblock %}
+</style>
+	
+{% include 'account/partials/_nav.html' %}
+<!-- content section -->
+{% block content %}
+  
+{% endblock %}
+<!-- /content section -->
+<script type="text/javascript" src="{% static 'js/vendors/jquery/jquery-3.3.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vendors/bootstrap/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vendors/text-effect/jquery.simple-text-rotator.min.js' %}"></script>
+<script type="text/javascript">
+{% block js %}
+
+{% endblock %}
+</script>
+
+</body>
+
+</html>

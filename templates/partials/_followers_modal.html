@@ -1,0 +1,46 @@
+<!-- Modal -->
+{% load static from staticfiles %}
+<div class="modal fade" id="exampleModalScrollableFollower" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content modal-sizing">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Followers</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal-scrollable-activate">
+       {% if user_followers %}
+          <ul class="list-group list-group-flush">
+            {% for user_f in user_followers %}
+              <li class="list-group-item clearfix">
+                {% if user_f.profile.pic %}
+                <img class='modal-avatar--img' src="{{user_f.profile.pic_url}}" alt="user_f.username dp">
+                {% else %}
+                <img class='modal-avatar--img' src="{% static 'images/avatar/default_avatar.jpeg' %}" alt="default-avatar dp">
+                {% endif %}
+                <span><a href="{{user_f.profile.get_absolute_url}}">{{user_f.username}}</a></span>
+                  {% if request.user != user_f %}
+                   <form action="{% url 'follow:follow-toggle' %}" method="POST" class="follow-form-avatar follow-avatar--btn" style="display: inline;">
+                      {% csrf_token %}
+                      <input type="hidden" name="to_user" value="{{user_f.username}}">
+                      {% if is_auth %}
+                        {% if request.user in user_f.profile.user_followers %}
+                        <button class="btn float-right btn-default btn--unfollow">UnFollow</button>
+                        {% else %}
+                        <button class="btn float-right btn-default btn--follow">Follow</button>
+                        {% endif %}
+                      {% endif %}
+                  </form>
+                  {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+       {% else %}
+       <p>No Followers</p>
+       {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Close Modal -->

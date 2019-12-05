@@ -1,0 +1,238 @@
+{% extends 'layout.html' %}
+{% load static from staticfiles %}
+
+
+<!-- block css -->
+{% block css %}
+.modal-sizing{
+	width:70% !important;
+}
+
+.modal-avatar--img{
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+}
+
+.modal-follow-form{
+	display:inline !important;
+}
+
+.btn-follow-modal{
+    background: transparent;
+    border: 2px solid;
+    border-color: #d8d5d5;
+    font-weight: 600;
+    color: #20abc9;
+    outline: none;
+    padding: .1em .94em;
+}
+
+.profile-follow-form button{
+	background: transparent;
+    border: 2px solid;
+    border-color: #d8d5d5;
+    font-weight: 600;
+    color: #20abc9;
+    outline: none;
+}
+
+.btn:focus{
+	outline: none !important;
+}
+
+.user-avatar{
+	width:100px !important;
+	height:100px !important;
+	max-width: 100% !important;
+	border-radius: 50% !important;
+	position:absolute;
+	top: 8.5rem;
+	left: 2em;
+	z-index: 0;
+}
+
+.card-margin-top{
+	margin-top: 3em;
+}
+
+.activity-body a{
+color:#357eb5;
+text-decoration:none;	
+}
+
+.activity-body .readable{
+	color:#0006;
+	font-size: 0.88rem;    
+	font-style: oblique;
+}
+ 
+
+
+{% endblock %}
+<!-- /block css -->
+
+<!-- content section -->
+{% block content %}
+<div class="container-fluid container--fluid--wrap">
+	{% ifequal request.user user %}
+		<div class="row mt-1 mb-2">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-lg-12 clearfix">
+						<div class="float-left" style="margin-left: 8em;">
+							<button class="btn btn-info shadow-sm" data-toggle="modal" data-target="#exampleModalScrollablePOST">ADD A POST</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% include 'partials/post_add_form_modal.html' %}
+	{% endifequal %}
+	<div class="row">
+		<div class="col-lg-6 col-md-6 offset-md-1 col-sm-7 offset-lg-1"><!-- profile over-view col - div -->
+						 <div class="row">
+						 	<div class="col-lg-12">
+						 		 <div class="card shadow-sm card-relative middle-content-card post-space--bottom">
+								 <img src="{% static 'images/ban.jpg' %}" class="card-img-top" alt="..." class="bck-banner">
+								 {% if user.profile.pic %}
+								 	<img class = 'user-avatar' src="{{user.profile.pic_url}}">
+								 {% else %}
+								 	<img class = 'user-avatar' src="{% static 'images/avatar/default_avatar.jpeg' %}">
+								 {% endif %}
+								  <div class="card-body card-margin-top clearfix">
+								  	{% if user.profile.full_name %}
+								    <h4 class="card-title clearfix">{{user.profile.full_name}}</h4>
+								    {% endif %}
+								    <h6 class="card-title">{{ user.username }}</h6>
+								    {% ifnotequal request.user user %}
+								    <form action="{% url 'follow:follow-toggle' %}" method="POST" class="follow-form-avatar follow-avatar--btn">
+						    			{% csrf_token %}
+						    			<input type="hidden" name="to_user" value="{{user.username}}">
+						    			{% if is_auth %}
+						    				{% if request.user in user.profile.user_followers %}
+						    				<button class="btn btn-default btn--unfollow">UnFollow</button>
+						    				{% else %}
+						    				<button class="btn btn-default btn--follow">Follow</button>
+						    				{% endif %}
+						    			{% endif %}
+						    		</form>
+								    {% endifnotequal %}
+								     <!-- followings partials -->
+									    {% include 'partials/_followings_modal.html' %}
+									 <!-- /followings partials -->
+								    <a class="btn btn-default float-right  ml-2" href="#" data-toggle="modal" data-target="#exampleModalScrollableFollower">{{user_followers.count}} Follower{{user_followers.count|pluralize}}</a>
+
+									 <!-- followers partials -->
+									    {% include 'partials/_followers_modal.html' %}
+									 <!-- /followers partials -->
+								    <a class="btn btn-default float-right" href="#" data-toggle="modal" data-target="#exampleModalScrollableFollowing">{{user_followings.count}} Following</a>
+
+								    <a class="btn btn-default float-right ml-2" href="#">{{posts.count}} Post{{posts.count|pluralize}}</a>
+								    <div class="container-fluid clearfix">
+								    	{% ifequal request.user user %}
+								    	<div class="row">
+								    		<div class="col-lg-12 clearfix mt-1">
+								    			<a href="{% url 'account:profile-edit' user.username %}">
+									    			<span class="card-title float-left edit-link"><span class="edit-text">Edit</span><i class="la la-pencil"></i>
+									    			</span>
+								    			</a>
+								    		</div>
+								    	</div>
+								        {% endifequal %}
+								    </div>
+								  </div>
+						 		</div>
+						 	</div>
+						 </div>
+		</div><!-- profile over-view col - div -->
+
+
+
+		<div class="col-lg-4 col-md-4 col-sm-4">
+				<div class="card shadow-sm right-aside-card">
+				  <img src="{% static 'images/_ads.png' %}" class="card-img-top" alt="...">
+				  <div class="card-body our--brand-aside">
+				    <a href="#" class="card-link">About</a>
+				    <a href="#" class="card-link">Help Center</a>
+				    <a href="#" class="card-link">Privacy & Terms</a>
+				    <a href="#" class="card-link">Advertising</a>
+				    <a href="#" class="card-link">Business Services</a>
+				    <a href="#" class="card-link">Products</a>
+				  </div>
+				</div>
+		</div>
+
+	</div><!-- row -->
+
+	<!-- row 2 -->
+		<div class="row">
+		<div class="col-lg-6 col-md-6 offset-md-1 col-sm-7 offset-lg-1"><!-- profile over-view col - div -->
+							 <div class="row">
+							 	<div class="col-lg-12">
+							 		<div class="card">
+									  <div class="card-body activity-body">
+									    <h5 class="card-title" style="color: #67bdff;font-size:1.1rem !important;">Recent Activity</h5>
+									    <!-- <p><img src="{% static 'images/avatar/default_avatar.jpeg' %}" alt="" style="width: 65px;height: auto;max-width: 100%;"> derrick created a post,'post title',2 min ago</p>
+									    <p><img src="{% static 'images/avatar/default_avatar.jpeg' %}" alt="" style="width: 65px;height: auto;max-width: 100%;"> mike commented on 'post_name' by owner,3 sec ago.</p>
+									    <p class="float-right"><a href="#">view all activity</a></p> -->
+									    <div>
+									    	{% for action in actions %}
+									    		{% with user=action.user profile=action.user.profile %}
+													<div class="action" style="">
+													  <div class="info" style="">
+													    <p style="font-size: 16px;">
+													      <a href="{{profile.get_absolute_url}}">
+													        {{ user.username }}
+													      </a>
+													      {{ action.verb }}
+													      {% if action.target %}
+													        {% with target=action.target %}
+													          <a href="{{target.get_absolute_url}}">{{ target }}</a>
+													        {% endwith %}
+													      {% endif %}
+													      <span class="readable">{{action.human_readable}}
+    													  </span>
+													    </p>
+													    <p>
+													    {% if action.target %}
+													        {% with target=action.target %}
+													        	{% if target.pic %}
+													          		<!-- {{target.pic}} -->
+													        	{% else %}
+													          		<!-- {{target.profile.pic}} -->
+													        	{% endif %}
+													        {% endwith %}
+													    {% endif %}
+													    </p>
+													  </div>
+													</div>
+													{% endwith %}
+									    	{% endfor %}
+									    </div>
+									  </div>
+									</div>
+							 	</div>
+							 </div>
+			</div>
+			<div class="col-lg-6 col-md-6 offset-md-1 col-sm-7 offset-lg-1"><!-- profile over-view col - div -->
+							 <div class="row">
+							 	<div class="col-lg-12">
+							 		<div class="card">
+									  <div class="card-body">
+									    <h5 class="card-title">Profile Details & Recent Post Activity (Like or commented on a post)</h5>
+									    <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
+									    <p class="card-text">user profile</p>
+									    <a href="#" class="card-link">Card link</a>
+									    <a href="#" class="card-link">Another link</a>
+									  </div>
+									</div>
+							 	</div>
+							 </div>
+			</div>
+		</div><!-- row -->
+	<!-- /row 2 -->
+
+</div>
+{% endblock %}
+<!-- /content section -->

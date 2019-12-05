@@ -1,0 +1,139 @@
+{% extends 'layout.html' %}
+{% load static from staticfiles %}
+
+
+<!-- content section -->
+{% block content %}
+<div class="container-fluid container--fluid--wrap">
+	<div class="row">
+
+		<div class="col-lg-2 offset-lg-1"><!-- aside left -->
+			 {% if is_auth %}
+			 <div class="card shadow-sm ads--card">
+				  <div class="card-body text-center">
+				  	{% if request.user.profile.pic %}
+				  	<img src="{{request.user.profile.pic_url}}" alt="{{ request.user.username }} pic" style="width: 100px;height: 100px;max-width: 100%; border-radius: 50%;"/>
+				  	{% else %}
+				  	<img src="{% static 'images/avatar/default_avatar.jpeg' %}" alt="" style="width: 100px;height: 100px;max-width: 100%;">
+				  	{% endif %}
+
+				    <p class="card-text" style="font-weight: 400;">{{request.user.username}}</p>
+				  </div>
+				  <ul class="list-group list-group-flush text-center">
+				    <li class="list-group-item"><a href="{{request.user.profile.get_absolute_url}}">Profile</a></li>
+				    <li class="list-group-item"><a href="{% url 'account:profile-edit' request.user.username %}">Edit Profile</a></li>
+				    <li class="list-group-item"><a href="#">
+				    
+				     <button type="button" class="" style="border:none;outline: none;background: transparent;">
+					  Notification <span class="badge badge-info">9</span>
+					</button>
+				    </a></li>
+				  </ul>
+			 </div>
+			 {% endif %}
+
+			 <div class="card shadow-sm ads--card text-center">
+				  <ul class="list-group list-group-flush">
+				    <li class="list-group-item ads-text"><i class="la la-certificate"></i>Buy this Ads space.</li>
+				  </ul>
+				  <div class="card-body">
+				    <p class="card-text">
+				    	ADVERTISE HERE
+				    </p>
+				  </div>
+			 </div>
+		</div><!-- close tag (aside left) -->
+
+
+
+		<div class="col-lg-5" id="post-list"><!-- middle content -->
+				{% if posts %}
+					{% include 'post/index_ajax.html' %}
+				{% endif %}
+		</div><!-- close tag (middle content) -->
+
+
+
+		<div class="col-lg-3"><!-- aside right -->
+				<div class="card shadow-sm right-aside-card">
+				  <img src="{% static 'images/_ads.png' %}" class="card-img-top" alt="...">
+				  <div class="card-body our--brand-aside">
+				    <a href="#" class="card-link">About</a>
+				    <a href="#" class="card-link">Help Center</a>
+				    <a href="#" class="card-link">Privacy & Terms</a>
+				    <a href="#" class="card-link">Advertising</a>
+				    <a href="#" class="card-link">Business Services</a>
+				    <a href="#" class="card-link">Products</a>
+				  </div>
+				</div>
+			{% if is_auth %}
+				{% if suggested_users %}
+				<div class="card shadow-sm suggested--div">
+				  <div class="card-header clearfix">
+				    Suggestions For You <span class="float-right"><a href="#">See All</a></span>
+				  </div>
+				  <ul class="list-group list-group-flush">
+				  	{% for suggested_user in suggested_users %}
+				    <li class="list-group-item">
+				    	{% if suggested_user.profile.pic %}
+				    	<img src="{{suggested_user.profile.pic_url}}" class="rounded-circle avatar-sizing">
+				    	{% else %}
+				    	<img src="{% static 'images/avatar/default_avatar.jpeg' %}" class="rounded-circle avatar-sizing">
+				    	{% endif %}
+				    	<p style="display: inline-block;"><a href="{% url 'account:user-profile' suggested_user.username %}">{{suggested_user.username}}</a></p>
+
+				    	<form action="{% url 'follow:follow-toggle' %}" method="POST" class="suggested-users-form float-right follow-form-avatar follow-avatar--btn">
+						    			{% csrf_token %}
+						    			<input type="hidden" name="to_user" value="{{suggested_user.username}}">
+						    			{% if is_auth %}
+						    				{% if request.user in suggested_user.profile.user_followers %}
+						    				<button class="btn btn-default btn--unfollow">UnFollow</button>
+						    				{% else %}
+						    				<button class="btn btn-default btn--follow">Follow</button>
+						    				{% endif %}
+						    			{% endif %}
+						</form>
+				    </li>
+				    {% endfor %}
+				  </ul>
+				</div>
+				{% endif %}
+			{% endif %}
+		</div><!-- close tag(aside right) -->
+
+	</div>
+
+</div>
+{% endblock %}
+
+
+{% block js %}
+
+var page = 1;
+var empty_page = false;
+var block_request = false;
+	$(window).scroll(function() {
+		var margin = $(document).height() - $(window).height() - 200;
+		if ($(window).scrollTop() > margin && empty_page == false &&
+		block_request == false) {
+		block_request = true;
+		page += 1;
+		$.get('?page=' + page, function(data) {
+	if(data == '') {
+		empty_page = true;
+	}
+	else {
+		block_request = false;
+	$('#post-list').append(data);
+		}
+	});
+  }
+});
+
+<!-- $('#exampleModal').on('click',function(e){
+$(this).modal('show');
+	$(this).parent('.like-comment-report-wrap-div').find('#exampleModal').modal('show');
+});
+ -->
+{% endblock %}
+<!-- /content section -->
