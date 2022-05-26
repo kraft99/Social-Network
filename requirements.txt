@@ -228,7 +228,7 @@ toolz==0.10.0
 tornado==6.0.3
 tqdm==4.36.1
 traitlets==4.3.3
-Twisted==19.10.0
+Twisted==22.4.0
 txaio==18.8.1
 unicodecsv==0.14.1
 urllib3==1.24.2
