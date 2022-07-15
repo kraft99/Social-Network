@@ -53,7 +53,7 @@ daphne==2.4.0
 dask==2.5.2
 decorator==4.4.0
 defusedxml==0.6.0
-distributed==2.5.2
+distributed==2021.10.0
 Django==2.2.6
 django-appconf==1.0.3
 django-crispy-forms==1.8.1
